@@ -5,7 +5,7 @@ init_stage1:
     mov ax, 0x3                     ;Set VGA video mode to 'mode 3'.
     int 0x10                        ;BIOS interrupt call.
 
-    push 0xb800                     ;Adress of VGA text buffer.
+    push 0xb800                     ;Address of VGA text buffer.
     pop es                          ;Store in ES register.
     mov si, text                    ;Point Source Index to outer image offset.
     xor di, di                      ;Clear Destination Index.
@@ -13,7 +13,7 @@ init_stage1:
     jmp process_blob
 
 set_color:
-    test al, 0x30                   ;If current character == '0'
+    test al, 0x30                   ;If current character is 0x30 (aka '0')
     jne green
     mov ah, 0x6                     ;Set color to red.
     ret
@@ -24,13 +24,13 @@ set_color:
 
 process_blob:
     lodsb                           ;Get byte from image (and store in al register).
-    test al, al                     ;Evaluate if fetched_byte == 0.
+    test al, al                     ;Evaluate if fetched_byte is 0x0.
     jz newline                      ;If so, jump to newline.
 
     movzx cx, al                    ;Copy byte to cx.
     shr al, 0x4                     ;Get first_nibble.
     and cl, 0xf                     ;Get second_nibble.
-    test al, al                     ;Evaluate if first_nibble == 0.
+    test al, al                     ;Evaluate if first_nibble is 0x0.
     jz whitespace                   ;If so jump to whitespace.
 
     mov al, byte [edx+eax]          ;Store lut[first_nibble] into al.
